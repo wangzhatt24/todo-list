@@ -2,15 +2,15 @@
 # todo-list
 
 **Route**
-router.get("/todos", getAllTodo);
-router.get("/todos/:id", getSingleTodo);
-router.post("/todos", createTodo);
-router.patch("/todos/:id", updateTodo);
-router.delete("/todos/:id", deleteTodo);
+<br> router.get("/todos", getAllTodo); 
+<br> router.get("/todos/:id", getSingleTodo);
+<br> router.post("/todos", createTodo);
+<br> router.patch("/todos/:id", updateTodo);
+<br> router.delete("/todos/:id", deleteTodo);
 
 **Schema**: 
-_id: mongoose ObjectId
-title: String
-content: String
-createdDate: Date
-completed: Boolean
+<br> _id: mongoose ObjectId
+<br> title: String
+<br> content: String
+<br> createdDate: Date
+<br> completed: Boolean
