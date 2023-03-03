@@ -18,12 +18,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //set up routes
-app.get("/",(req, res) => {
-	res.write('<a href="./mg/">mongo-route</a>');
-	res.write('<br>');
-	res.write('<a href="./pg/">postgre-route</a>');
-	res.end();
-})
+app.get("/", (req, res) => {
+  res.write('<a href="./mg/">MongoDB-route</a>');
+  res.write("<br>");
+  res.write('<a href="./pg/">PostgreSQL-route</a>');
+  res.end();
+});
 app.use("/pg/", todoListPgRoutes);
 app.use("/mg/", todoListMgRoute);
 
