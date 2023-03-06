@@ -7,6 +7,7 @@ export async function createTodo(req, res) {
     title: req.body.title,
     content: req.body.content,
     createdDate: req.body.createdDate,
+    updatedDate: new Date(),
     completed: req.body.completed,
   });
 

@@ -1,19 +1,5 @@
-import Sequelize, { DataTypes } from "sequelize";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const DATABASE_NAME = process.env.DATABASE_NAME;
-const USER_NAME = process.env.USER_NAME;
-const PASSWORD = process.env.PASSWORD;
-const HOST = process.env.HOST;
-const DIALECT = process.env.DIALECT;
-
-//sequelize
-const sequelize = new Sequelize(DATABASE_NAME, USER_NAME, PASSWORD, {
-  host: HOST,
-  dialect: DIALECT,
-});
+import sequelize from "./connector.model.js";
+import { DataTypes } from "sequelize";
 
 const TodoModel = sequelize.define(
   "todolist",
@@ -30,6 +16,14 @@ const TodoModel = sequelize.define(
     },
     content: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    planedFinish: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    delayed: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     completed: {
