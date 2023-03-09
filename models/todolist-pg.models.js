@@ -1,5 +1,5 @@
 import sequelize from "./connector.model.js";
-import { DataTypes } from "sequelize";
+import { DataTypes, DATE } from "sequelize";
 
 const TodoModel = sequelize.define(
   "todolist",
@@ -30,8 +30,16 @@ const TodoModel = sequelize.define(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   },
-  {}
+  { timestamps: false }
 );
 
 export default TodoModel;

@@ -1,6 +1,7 @@
 import { TodoModel } from "../models/index.model.js";
 import { Op } from "sequelize";
 import { downloadResource } from "../utils/util.js";
+import sequelize from "../models/connector.model.js";
 
 export async function createTodo(req, res) {
   const todo = TodoModel.build({
@@ -9,6 +10,8 @@ export async function createTodo(req, res) {
     planedFinish: req.body.planedFinish,
     delayed: req.body.delayed,
     completed: req.body.completed,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
   await todo
@@ -82,6 +85,8 @@ export async function updateTodo(req, res) {
       planedFinish: req.body.planedFinish,
       delayed: req.body.delayed,
       completed: req.body.completed,
+      createdAt: req.body.createdAt,
+      updatedAt: new Date(),
     },
     {
       where: {
@@ -167,36 +172,83 @@ export async function downloadTodoList(req, res) {
 
 export async function searchTodo(req, res) {
   // Chưa dùng sequelize để truy vấn và sắp xếp -> bad
+  // if (false) {
+  //   const filters = req.query;
+  //   console.log(`filters: ${filters}`);
+  //   console.log(filters.sort);
+  //   //nếu tồn tại sort thì là có yêu cầu sắp xếp theo trường
+  //   const data = await TodoModel.findAll().catch((err) =>
+  //     res.status(500).json({
+  //       success: false,
+  //       message: "Unknown error occurred",
+  //       error: err,
+  //     })
+  //   );
 
-  const filters = req.query;
-  console.log(`filters: ${filters}`);
-  console.log(filters.sort);
-  //nếu tồn tại sort thì là có yêu cầu sắp xếp theo trường
-  const data = await TodoModel.findAll().catch((err) =>
-    res.status(500).json({
-      success: false,
-      message: "Unknown error occurred",
-      error: err,
-    })
-  );
+  //   const filteredTodos = data.filter((todo) => {
+  //     let isValid = true;
+  //     for (const key in filters) {
+  //       // console.log(`compared: `, key, todo[key], filters[key]);
+  //       isValid = isValid && todo[key] == filters[key];
+  //     }
+  //     return isValid;
+  //   });
 
-  const filteredTodos = data.filter((todo) => {
-    let isValid = true;
-    for (const key in filters) {
-      // console.log(`compared: `, key, todo[key], filters[key]);
-      isValid = isValid && todo[key] == filters[key];
-    }
-    return isValid;
-  });
+  //   res.status(200).json({
+  //     success: true,
+  //     message: "Filter successfully",
+  //     todos: filteredTodos,
+  //   });
+  // }
+
+  /* Triển khai lại */
+  const { title, content, created_at, sort } = req.query;
+
+  let todos = await TodoModel.findAll({});
+
+  if (title) {
+    todos = await todos.filter((todo) => todo.title.includes(title));
+  }
+
+  if (content) {
+    todos = await todos.filter((todo) => todo.content.includes(content));
+  }
+
+  if (sort) {
+    const [field, order] = sort.split(":");
+
+    console.log(`field ${field}`);
+    console.log(`order ${order}`);
+    todos = todos.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      }
+      return a[field] < b[field] ? 1 : -1;
+    });
+  }
+
+  // loi
+
+  if (created_at) {
+    const selectedDate = new Date(created_at);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    todos = await todos.filter((todo) => {
+      const todoDate = new Date(todo.createdAt);
+      todoDate.setHours(0, 0, 0, 0);
+
+      return todoDate.getTime() === selectedDate.getTime();
+    });
+  }
 
   res.status(200).json({
     success: true,
-    message: "Filter successfully",
-    todos: filteredTodos,
+    message: "Items searched successfully",
+    todo: todos,
   });
 }
 
-//day report
+//day report chua lam duoc
 export async function dayReport(req, res) {
   const day = new Date(req.body.dayToReport);
   console.log(`day: ${day.getDate()} - ${day.getMonth()} `);
